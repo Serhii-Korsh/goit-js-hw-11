@@ -1,34 +1,34 @@
 import { fetchImages } from './js/pixabay-api.js';
-import { renderGallery, showLoader, hideLoader } from './js/render-functions.js';
+import { renderGallery, showNoResultsMessage, showErrorMessage } from './js/render-functions.js';
 
 const form = document.querySelector('#search-form');
-const input = document.querySelector('input[name="query"]');
+const loader = document.querySelector('.loader'); 
 
-form.addEventListener('submit', onSearchSubmit);
-
-async function onSearchSubmit(event) {
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const query = input.value.trim();
-
-    if (!query) {
-        iziToast.warning({
-            title: 'Input Error',
-            message: 'Please enter a search term!',
-        });
+    
+    const searchQuery = form.querySelector('input').value.trim();
+    
+    if (!searchQuery || searchQuery === '') {
+        showErrorMessage('The search field cannot be empty!');
         return;
     }
 
-    showLoader();
-
+    loader.style.display = 'block'; 
     try {
-        const images = await fetchImages(query);
-        renderGallery(images);
+        const data = await fetchImages(searchQuery);
+        loader.style.display = 'none'; 
+
+        if (data.hits.length === 0) {
+            showNoResultsMessage();
+        } else {
+            renderGallery(data.hits);
+        }
     } catch (error) {
-        iziToast.error({
-            title: 'No Results',
-            message: 'No images were found. Please try a different keyword.',
-        });
-    } finally {
-        hideLoader();
+        loader.style.display = 'none';
+        showErrorMessage('The request failed. Please try again later.');
     }
-}
+});
+
+
+
