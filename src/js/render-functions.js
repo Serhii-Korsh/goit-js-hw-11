@@ -5,7 +5,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 export function renderGallery(images) {
     const gallery = document.querySelector('.gallery');
-    gallery.innerHTML = ''; 
+  
 
     images.forEach(image => {
         const item = document.createElement('div');
@@ -30,6 +30,13 @@ export function renderGallery(images) {
     lightbox.refresh();
 }
 
+// Функция для очистки галереи
+export function clearGallery() {
+    const gallery = document.querySelector('.gallery');
+    gallery.innerHTML = '';
+}
+
+
 export function showNoResultsMessage() {
     iziToast.warning({
         message: 'Sorry, there are no images matching <br>your search query. Please try again!',
@@ -43,6 +50,7 @@ export function showNoResultsMessage() {
         theme: 'dark',
         class: 'toast-center',
     });
+    
 }
 
 export function showErrorMessage(message) {
